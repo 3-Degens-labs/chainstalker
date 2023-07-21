@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { documentReady } from "./document-ready";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { Profile } from "./Profile";
 
 interface Props {
   id: string;
@@ -33,11 +35,16 @@ function Card({ name, id }: Props) {
       addressElement?.removeEventListener("mouseleave", handleMouseLeave);
     };
   }, []);
+  if (style.display === "none") {
+    return;
+  }
   return (
     <div
       style={{
         display: style.display,
         top: style.top,
+        fontFamily:
+          '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif',
         left: style.left,
         padding: 20,
         border: "2px solid #6f42c1", // Adding a border with a fancy color (#6f42c1)
@@ -51,7 +58,9 @@ function Card({ name, id }: Props) {
         fontSize: "18px",
       }}
     >
-      <span data-augment-ignore="ignore">{name}</span>: $3123
+      <React.Suspense fallback={<span>loading card...</span>}>
+        <Profile account={name} />
+      </React.Suspense>
     </div>
   );
 }
@@ -67,8 +76,23 @@ async function prepare() {
 
 prepare();
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      suspense: true,
+      useErrorBoundary: true,
+    },
+  },
+});
+
 export function addCard(props: Props) {
   const card = document.createElement("div");
   cardsElement?.appendChild(card);
-  createRoot(card).render(<Card {...props} />);
+  createRoot(card).render(
+    <QueryClientProvider client={queryClient}>
+      <React.Suspense fallback={<p>loading...</p>}>
+        <Card {...props} />
+      </React.Suspense>
+    </QueryClientProvider>
+  );
 }
