@@ -13,6 +13,14 @@ function visitTextNodes(node: Element, cb: (node: Node) => boolean) {
 //   const { textContent } = textNode;
 //   return textContent && regex.test(textContent);
 // }
+//
+// padding: '20px',
+//     border: '2px solid',
+//     borderRadius: '10px',
+//     backgroundColor: '#272727', // Dark background color
+//     color: '#e1e1e1', // Bright text color
+//     fontSize: '16px',
+
 
 function augmentAddress(textNode: Node) {
   const id = crypto.randomUUID();
@@ -21,7 +29,13 @@ function augmentAddress(textNode: Node) {
   span.textContent = textNode.textContent;
   const match = span.textContent?.match(/\b(\w+\.eth)\b/gi);
   const addrName = match?.[0] || "unparsed";
-  span.style.backgroundColor = "magenta";
+  span.style.padding = "5px";
+  span.style.backgroundColor = "#6f42c1";
+  // span.style.boxShadow = "0 0 10px rgba(111, 66, 193, 0.7)";
+  span.style.borderRadius = "15px";
+  span.style.border = "1px solid #6f42c1";
+  span.style.color = "#f6f4f4";
+
   span.dataset.augmentIgnore = "ignore";
   (textNode as Element).replaceWith(span);
   addCard({ name: addrName, id });
