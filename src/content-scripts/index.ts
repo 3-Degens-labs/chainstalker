@@ -1,1 +1,2 @@
-console.log("hello extension eth address");
+import { pageObserver } from './page-mutation';
+pageObserver.start();
