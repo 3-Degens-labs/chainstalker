@@ -11,4 +11,4 @@ npm start
 
 ### Add as Extension
 
-Open chrome://extensions, press "Load Unpacked", select `dist` folder
+Open `chrome://extensions`, press "Load Unpacked", select `dist` folder
