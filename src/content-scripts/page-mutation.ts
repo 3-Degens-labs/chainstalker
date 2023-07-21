@@ -23,6 +23,7 @@ function augmentAddress(textNode: Node) {
   const addrName = match?.[0] || "unparsed";
   span.style.backgroundColor = "magenta";
   span.dataset.augmentIgnore = "ignore";
+  span.setAttribute('id', id);
   (textNode as Element).replaceWith(span);
   addCard({ name: addrName, id });
 }
