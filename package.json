@@ -2,10 +2,23 @@
   "name": "extension-eth-address",
   "version": "1.0.0",
   "description": "",
-  "main": "src/manifest.json",
   "scripts": {
+    "start": "npm-run-all --parallel start:app type-check:watch",
+    "start:app": "parcel watch src/manifest.json --no-hmr --no-content-hash --no-autoinstall",
+    "build": "echo \"Please run 'npm run build:production' instead\" && exit 1",
+    "build:production": "node scripts/build.js",
+    "type-check": "tsc --noEmit",
+    "type-check:watch": "tsc --noEmit --pretty --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "everdimension",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@parcel/config-webextension": "^2.9.3",
+    "@types/chrome": "^0.0.241",
+    "@types/node": "^20.4.2",
+    "npm-run-all": "^4.1.5",
+    "parcel": "^2.9.3",
+    "typescript": "^5.1.6"
+  }
 }

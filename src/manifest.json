@@ -3,7 +3,6 @@
   "name": "Ethereum Address Watcher",
   "version": "1.0",
   "description": "Show details for ethereum addresses found on page",
-
   "icons": {
     "16": "images/icon-512.png",
     "32": "images/icon-512.png",
@@ -12,11 +11,8 @@
   },
   "content_scripts": [
     {
-      "js": ["content-scripts/index.js"],
-      "matches": [
-        "https://developer.chrome.com/docs/extensions/*",
-        "https://developer.chrome.com/docs/webstore/*"
-      ]
+      "js": ["content-scripts/index.ts"],
+      "matches": ["https://*/*", "http://localhost/*", "http://0.0.0.0/*"]
     }
   ]
 }
