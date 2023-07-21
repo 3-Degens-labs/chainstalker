@@ -30,11 +30,11 @@ function augmentAddress(textNode: Node) {
   const match = span.textContent?.match(/\b(\w+\.eth)\b/gi);
   const addrName = match?.[0] || "unparsed";
   span.style.padding = "5px";
-  span.style.backgroundColor = "#6f42c1";
+  // span.style.backgroundColor = "#6f42c1";
   // span.style.boxShadow = "0 0 10px rgba(111, 66, 193, 0.7)";
   span.style.borderRadius = "1000px";
   span.style.border = "1px solid #6f42c1";
-  span.style.color = "#f6f4f4";
+  // span.style.color = "#f6f4f4";
 
   span.dataset.augmentIgnore = "ignore";
   span.setAttribute('id', id);

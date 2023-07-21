@@ -40,10 +40,15 @@ function Card({ name, id }: Props) {
         top: style.top,
         left: style.left,
         padding: 20,
-        border: "2px solid",
+        border: "2px solid #6f42c1", // Adding a border with a fancy color (#6f42c1)
         position: "absolute",
         zIndex: 1,
         backgroundColor: "white",
+        borderRadius: "20px", // Adding rounded corners
+        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)", // Adding a subtle box-shadow
+        backgroundImage: "linear-gradient(135deg, #f49b00, #6f42c1, #18a5a5)", // Fancy gradient background
+        color: "#fff",
+        fontSize: "18px",
       }}
     >
       <span data-augment-ignore="ignore">{name}</span>: $3123
