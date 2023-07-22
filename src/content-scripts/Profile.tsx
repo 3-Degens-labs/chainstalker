@@ -6,6 +6,7 @@ import { WalletAvatar } from "src/components/WalletAvatar";
 import { truncateAddress } from "src/shared/truncateAddress";
 import { NeutralDecimals } from "src/components/NeutralDecimals";
 import { currencyFormatter } from "src/components/units/currency-format";
+import { normalizeAddress } from "src/shared/normalizeAddress";
 
 interface AddressPortfolio {
   links: { self: string };
@@ -25,9 +26,10 @@ export function Profile({
   address: string;
   domain: string | null;
 }) {
+  const normalizedAddr = normalizeAddress(address);
   const portfolioQuery = useQuery({
-    queryKey: ["addressPortfolio", address],
-    queryFn: () => fetchAddressPortfolio(address),
+    queryKey: ["addressPortfolio", normalizedAddr],
+    queryFn: () => fetchAddressPortfolio(normalizedAddr),
     enabled: Boolean(address),
     refetchOnMount: false,
     refetchOnWindowFocus: false,

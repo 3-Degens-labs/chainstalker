@@ -1,12 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { useMemo } from "react";
+import { normalizeAddress } from "src/shared/normalizeAddress";
 import { fetchStats } from "src/shared/requests/fetchStats";
 
 export function OfflineCheckin({ address }: { address: string }) {
+  const normalizedAddress = normalizeAddress(address);
   const { data: stats } = useQuery({
-    queryKey: ["fetchStats", address],
-    queryFn: () => fetchStats(address),
+    queryKey: ["fetchStats", normalizedAddress],
+    queryFn: () => fetchStats(normalizedAddress),
   });
   if (!stats) {
     return null;

@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
-import { VStack } from "structure-kit";
+import { HStack, VStack } from "structure-kit";
 import { GradientText } from "../GradientText";
 import { fetchStats } from "src/shared/requests/fetchStats";
+import { normalizeAddress } from "src/shared/normalizeAddress";
 
 function Stat({
   name,
@@ -74,9 +75,10 @@ function dateToAgeString(dateString: string) {
 }
 
 export function Stats({ address }: { address: string }) {
+  const normalizedAddress = normalizeAddress(address);
   const { data } = useQuery({
-    queryKey: ["fetchStats", address],
-    queryFn: () => fetchStats(address),
+    queryKey: ["fetchStats", normalizedAddress],
+    queryFn: () => fetchStats(normalizedAddress),
   });
   if (!data) {
     return null;
@@ -94,7 +96,7 @@ export function Stats({ address }: { address: string }) {
       <div style={{ display: "flex", gap: 24 }}>
         {data.totalTransactionsLast7DaysFromOwner == null ? null : (
           <Stat
-            name="Tx Score"
+            name="Last Week Tx #"
             detail={data.totalTransactionsLast7DaysFromOwner}
           />
         )}
@@ -112,7 +114,7 @@ export function Stats({ address }: { address: string }) {
         />
         {daysSinceLastTx == null ? null : (
           <Stat
-            name="Last TX"
+            name="Last Activity"
             detail={
               daysSinceLastTx === 0
                 ? "Today"
@@ -123,33 +125,65 @@ export function Stats({ address }: { address: string }) {
             }
           />
         )}
-        {data.earliestTransaction == null ? null : (
+        {data.oldEnough ? (
+          <Stat
+            name="Crypto Age"
+            detail={
+              <GradientText>
+                <strong title="This wallet is old in crypto years">OG</strong>
+              </GradientText>
+            }
+          />
+        ) : data.earliestTransaction == null ? null : (
           <Stat
             name="Crypto Age"
             detail={dateToAgeString(data.earliestTransaction.date)}
           />
         )}
       </div>
-      <div style={{ display: "flex", gap: 24 }}>
+      <HStack gap={12} justifyContent="space-between">
         {data.hasWorldCoin ? (
-          <img
-            style={{ display: "block", width: 64, height: 64 }}
-            src="https://static-assets.lenster.xyz/images/badges/worldcoin.png"
-          />
+          <Stat name="WorldCoin Owner" detail="True" />
         ) : null}
-        {data.poapInfo?.lastOffline?.imageUrl ? (
-          <img
-            style={{ display: "block", width: 64, height: 64 }}
-            src={data.poapInfo.lastOffline.imageUrl}
-          />
-        ) : null}
-        {data.poapInfo?.lastOnline?.imageUrl ? (
-          <img
-            style={{ display: "block", width: 64, height: 64 }}
-            src={data.poapInfo.lastOnline.imageUrl}
-          />
-        ) : null}
-      </div>
+        <div style={{ display: "flex", gap: 0, marginLeft: "auto" }}>
+          {data.hasWorldCoin ? (
+            <img
+              style={{
+                display: "block",
+                width: 44,
+                height: 44,
+                marginLeft: -12,
+                borderRadius: "50%",
+              }}
+              src="https://static-assets.lenster.xyz/images/badges/worldcoin.png"
+            />
+          ) : null}
+          {data.poapInfo?.lastOffline?.imageUrl ? (
+            <img
+              style={{
+                display: "block",
+                width: 44,
+                height: 44,
+                marginLeft: -12,
+                borderRadius: "50%",
+              }}
+              src={data.poapInfo.lastOffline.imageUrl}
+            />
+          ) : null}
+          {data.poapInfo?.lastOnline?.imageUrl ? (
+            <img
+              style={{
+                display: "block",
+                width: 44,
+                height: 44,
+                marginLeft: -12,
+                borderRadius: "50%",
+              }}
+              src={data.poapInfo.lastOnline.imageUrl}
+            />
+          ) : null}
+        </div>
+      </HStack>
     </VStack>
   );
 }
