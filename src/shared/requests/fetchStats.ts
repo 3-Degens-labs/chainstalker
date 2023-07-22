@@ -51,6 +51,7 @@ export interface StatsResponse {
   totalTransactionHappenedOverLast7DaysTotal: null | number;
   totalTransactionsLast7DaysFromOwner: null | number;
   latestOutboundTransactionDate: null | string;
+  earliestTransaction: null | { chainId: number; date: string };
 }
 
 export function fetchStats(address: string) {
