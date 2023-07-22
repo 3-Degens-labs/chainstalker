@@ -62,12 +62,24 @@ function Card({ name, id }: Props) {
       return;
     }
     const handleMouseEnter = () => {
-      const { height, y, x } = addressElement.getBoundingClientRect();
+      const { height, width, y, x } = addressElement.getBoundingClientRect();
       const { scrollLeft, scrollTop } = document.documentElement;
+      const windowHeight = window.innerHeight;
+      const windowWidth = window.innerWidth;
+      const approxCardWidth = 390;
+      const approxCardHeight = 200;
+      let top = scrollTop + y + height + 12;
+      let left = scrollLeft + x;
+      if (top + approxCardHeight > windowHeight + scrollTop) {
+        top = scrollTop + y - approxCardHeight - 12;
+      }
+      if (left + approxCardWidth > windowWidth + scrollLeft) {
+        left = scrollLeft + x + width - approxCardWidth - 12;
+      }
       setDisplay({
         display: "block",
-        top: scrollTop + y + height + 12,
-        left: scrollLeft + x,
+        top,
+        left,
       });
     };
     const handleMouseLeave = () => {
@@ -112,15 +124,11 @@ function Card({ name, id }: Props) {
           '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif',
         left: style.left,
         padding: 20,
-        // border: "2px solid #6f42c1", // Adding a border with a fancy color (#6f42c1)
         position: "absolute",
         zIndex: 10,
         backgroundColor: "white",
         borderRadius: "20px", // Adding rounded corners
-        // boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)", // Adding a subtle box-shadow
         boxShadow: "rgba(0, 0, 0, 0.1) 0px 5px 8px 2px",
-        // backgroundImage: "linear-gradient(135deg, #f49b00, #6f42c1, #18a5a5)", // Fancy gradient background
-        // color: "#fff",
         fontSize: "18px",
       }}
     >
