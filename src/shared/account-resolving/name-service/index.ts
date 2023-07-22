@@ -1,12 +1,12 @@
 import { normalizeAddress } from "src/shared/normalizeAddress";
 import { ensLookup, ensResolve } from "./ens";
 import { lensLookup, lensResolve } from "./lens";
-import { udLookup, udResolve } from "./ud";
+// import { udLookup, udResolve } from "./ud";
 
 export type Registry = (address: string) => Promise<string | null>;
 
-export const registries = [ensLookup, lensLookup, udLookup];
-export const resolvers = [ensResolve, lensResolve, udResolve];
+export const registries = [ensLookup, lensLookup];
+export const resolvers = [ensResolve, lensResolve];
 
 async function lookupAddressNames(address: string): Promise<string[]> {
   const addresses = await Promise.allSettled(
@@ -28,7 +28,6 @@ export async function lookupAddressName(
 }
 
 export async function resolveDomain(domain: string): Promise<string | null> {
-  console.log("will resolve", domain);
   const addresses = await Promise.allSettled(
     resolvers.map((resolve: Registry) => {
       try {
@@ -38,7 +37,6 @@ export async function resolveDomain(domain: string): Promise<string | null> {
       }
     })
   ).then((results) => {
-    console.log("resolve then", results);
     const fulfilled = results.filter(
       (res) => res.status === "fulfilled"
     ) as PromiseFulfilledResult<string>[];

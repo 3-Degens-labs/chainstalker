@@ -17,8 +17,8 @@ export function WalletAvatar({
     queryFn: () => fetchStats(address),
   });
   const src =
-    data?.profile.profiles[0]?.nft.metadata.content.image_url ||
-    data?.profile.profiles[0]?.nft.metadata.content.image_preview_url;
+    data?.profile.profiles[0]?.nft?.metadata?.content.image_url ||
+    data?.profile.profiles[0]?.nft?.metadata?.content.image_preview_url;
 
   if (isLoading) {
     return <div style={{ width: size, height: size }} />;

@@ -19,11 +19,11 @@ interface Poap {
 
 interface Profile {
   address: string;
-  nft: {
+  nft: null | {
     contract_address: string;
     token_id: string;
     chain: string;
-    metadata: {
+    metadata: null | {
       name: string;
       content: {
         type: string;
