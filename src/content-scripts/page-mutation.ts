@@ -1,4 +1,4 @@
-import { addCard } from "./Card";
+import { addCard, removeCard } from "./Card";
 import { documentReady } from "./document-ready";
 
 function visitTextNodes(node: Element, cb: (node: Node) => boolean) {
@@ -9,65 +9,73 @@ function visitTextNodes(node: Element, cb: (node: Node) => boolean) {
   }
 }
 
-// function isReplacementMatch(textNode: Node, regex: RegExp) {
-//   const { textContent } = textNode;
-//   return textContent && regex.test(textContent);
-// }
-//
-// padding: '20px',
-//     border: '2px solid',
-//     borderRadius: '10px',
-//     backgroundColor: '#272727', // Dark background color
-//     color: '#e1e1e1', // Bright text color
-//     fontSize: '16px',
-
 const domainPattern = /\b((\w|\.)+\.(eth|lens))\b/i;
 const addressPattern = /\b(0x[a-fA-F0-9]{40})\b/;
 
-function augmentAddress(textNode: Node) {
+function augmentAddress(textNode: Node, { update = false } = {}) {
   const id = crypto.randomUUID();
-  const span = document.createElement("span");
-  // span.dataset.augmentCard = id;
-  span.textContent = textNode.textContent;
   const match =
-    span.textContent?.match(domainPattern) ||
-    span.textContent?.match(addressPattern);
+    textNode.textContent?.match(domainPattern) ||
+    textNode.textContent?.match(addressPattern);
   const addrName = match?.[0] || "unparsed";
-  // span.style.padding = "5px";
-  // span.style.backgroundColor = "#6f42c1";
-  // span.style.boxShadow = "0 0 10px rgba(111, 66, 193, 0.7)";
-  // span.style.borderRadius = "1000px";
-  // span.style.border = "1px solid #6f42c1";
+  if (update) {
+    const { parentElement } = textNode;
+    if (parentElement?.id) {
+      removeCard({ id: parentElement.id });
+      parentElement.style.borderColor = "transparent";
+      parentElement.style.borderImageSource = "";
+      parentElement.dataset.augmentText = textNode.textContent?.trim() || "";
+    }
+    if (!match) {
+      return;
+    }
+  }
+  const span = update ? textNode.parentElement : document.createElement("span");
+  if (!span) {
+    return;
+  }
   span.style.borderBottom = "3px solid";
   span.style.borderImageSlice = "1";
   span.style.borderImageSource = "linear-gradient(to left, #743ad5, #d53a9d)";
-  /* display: block; */
-  // span.style.color = "#f6f4f4";
 
-  span.dataset.augmentIgnore = "ignore";
   span.setAttribute("id", id);
-  (textNode as Element).replaceWith(span);
+  if (!update) {
+    textNode.parentElement?.insertBefore(span, textNode);
+    span.appendChild(textNode);
+  }
+  span.dataset.augmentText = textNode.textContent?.trim() || "";
   addCard({ name: addrName, id });
 }
 
 function parseAddresses(node: Node = document.body) {
   if (node instanceof Element) {
     const candidates: Node[] = [];
+    const updatedCandidates: Node[] = [];
     visitTextNodes(node, (textNode) => {
       const { textContent, parentElement } = textNode;
 
+      if (parentElement?.dataset.augmentText) {
+        if (parentElement?.dataset.augmentText !== textContent?.trim()) {
+          updatedCandidates.push(textNode);
+        }
+      }
       if (
         parentElement?.dataset.augmentIgnore !== "ignore" &&
         textContent &&
         (addressPattern.test(textContent) || domainPattern.test(textContent))
       ) {
-        candidates.push(textNode);
+        if (parentElement?.dataset.augmentText === undefined) {
+          candidates.push(textNode);
+        }
       }
       return false;
     });
 
     candidates.forEach((candidate) => {
       augmentAddress(candidate);
+    });
+    updatedCandidates.forEach((candidate) => {
+      augmentAddress(candidate, { update: true });
     });
   }
 }
@@ -78,9 +86,18 @@ function observeDOM(node: ParentNode = document.body) {
       mutation.addedNodes.forEach((node) => {
         parseAddresses(node);
       });
+      if (mutation.type === "characterData") {
+        if (mutation.target.parentElement) {
+          parseAddresses(mutation.target.parentElement);
+        }
+      }
     });
   });
-  observer.observe(node, { subtree: true, childList: true });
+  observer.observe(node, {
+    subtree: true,
+    childList: true,
+    characterData: true,
+  });
   parseAddresses(); // leading invokation
   return () => observer.disconnect();
 }

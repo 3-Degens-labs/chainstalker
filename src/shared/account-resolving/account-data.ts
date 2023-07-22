@@ -10,9 +10,7 @@ async function getAccountData(value: string) {
     const domain = await lookupAddressName(value);
     return { address: value, domain };
   } else {
-    console.log("is domain");
     const address = await resolveDomain(value);
-    console.log("resolved", address);
     return { address, domain: value };
   }
 }

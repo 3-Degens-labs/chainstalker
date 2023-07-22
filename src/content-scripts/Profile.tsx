@@ -32,7 +32,6 @@ export function Profile({
     refetchOnMount: false,
     refetchOnWindowFocus: false,
   });
-  console.log(portfolioQuery.data);
   return (
     <HStack gap={8} style={{ display: "flex" }}>
       <WalletAvatar size={64} address={address} />

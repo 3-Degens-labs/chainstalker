@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { createRoot } from "react-dom/client";
+import { Root, createRoot } from "react-dom/client";
 import { documentReady } from "./document-ready";
 import { Profile } from "./Profile";
 import {
@@ -160,14 +160,27 @@ const queryClient = new QueryClient({
   },
 });
 
+const map = new Map<string, { reactRoot: Root; parent: HTMLElement }>();
+
 export function addCard(props: Props) {
   const card = document.createElement("div");
   cardsElement?.appendChild(card);
-  createRoot(card).render(
+  const root = createRoot(card);
+  map.set(props.id, { reactRoot: root, parent: card });
+  root.render(
     <QueryClientProvider client={queryClient}>
       <React.Suspense fallback={<p>loading...</p>}>
         <Card {...props} />
       </React.Suspense>
     </QueryClientProvider>
   );
+}
+
+export function removeCard({ id }: { id: string }) {
+  const entry = map.get(id);
+  if (entry) {
+    entry.reactRoot.unmount();
+    entry.parent.remove();
+    map.delete(id);
+  }
 }
