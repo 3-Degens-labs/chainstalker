@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { documentReady } from "./document-ready";
 import { Profile } from "./Profile";
@@ -54,6 +54,8 @@ interface Props {
 
 function Card({ name, id }: Props) {
   const [style, setDisplay] = useState({ display: "none", top: 0, left: 0 });
+  const timerRef = useRef<NodeJS.Timeout | number>(0);
+  const cardRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     const addressElement = document.getElementById(id);
     if (!addressElement) {
@@ -69,13 +71,31 @@ function Card({ name, id }: Props) {
       });
     };
     const handleMouseLeave = () => {
-      setDisplay({ display: "none", left: 0, top: 0 });
+      timerRef.current = setTimeout(() => {
+        setDisplay({ display: "none", left: 0, top: 0 });
+      }, 300);
     };
     addressElement?.addEventListener("mouseenter", handleMouseEnter);
     addressElement?.addEventListener("mouseleave", handleMouseLeave);
+    const handleCardMouseEnter = () => {
+      clearTimeout(timerRef.current);
+    };
+    const handleCardMouseLeave = () => {
+      setDisplay({ display: "none", left: 0, top: 0 });
+    };
+    const { current: cardElement } = cardRef;
+    if (cardElement) {
+      cardElement.addEventListener("mouseenter", handleCardMouseEnter);
+      cardElement.addEventListener("mouseleave", handleCardMouseLeave);
+    }
     return () => {
       addressElement?.removeEventListener("mouseenter", handleMouseEnter);
       addressElement?.removeEventListener("mouseleave", handleMouseLeave);
+      if (cardElement) {
+        cardElement.removeEventListener("mouseenter", handleCardMouseEnter);
+        cardElement.removeEventListener("mouseleave", handleCardMouseLeave);
+      }
+      clearTimeout(timerRef.current);
     };
   }, []);
   // if (style.display === "none") {
@@ -83,6 +103,7 @@ function Card({ name, id }: Props) {
   // }
   return (
     <div
+      ref={cardRef}
       style={{
         display: style.display,
         top: style.top,
@@ -104,7 +125,16 @@ function Card({ name, id }: Props) {
       }}
     >
       <React.Suspense fallback={<span>loading card...</span>}>
-        <CardContent name={name} />
+        <ErrorBoundary
+          renderError={(error) => (
+            <div>
+              Failed to render.{" "}
+              {error?.message ? `Reason: ${error.message}` : ""}
+            </div>
+          )}
+        >
+          <CardContent name={name} />
+        </ErrorBoundary>
       </React.Suspense>
     </div>
   );

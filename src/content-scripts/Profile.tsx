@@ -38,8 +38,19 @@ export function Profile({
       <WalletAvatar size={64} address={address} />
 
       <VStack gap={4}>
-        <div data-augment-ignore="ignore" style={{ lineHeight: 1.2 }}>
-          {domain || truncateAddress(address)}
+        <div
+          style={{ lineHeight: 1.2 }}
+          title={address}
+        >
+          <a
+            data-augment-ignore="ignore"
+            style={{ color: "var(--primary)" }}
+            href={`https://app.zerion.io/${address}/overview`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {domain || truncateAddress(address)}
+          </a>
         </div>
         <div data-augment-ignore="ignore">
           <span style={{ fontSize: 36, lineHeight: 1 }}>

@@ -27,17 +27,23 @@ export function Stats({ address }: { address: string }) {
   if (!data) {
     return null;
   }
-  const daysSinceLastTx = Math.floor(
-    (new Date(data.latestOutboundTransactionDate).valueOf() - Date.now()) /
-      (1000 * 60 * 60 * 24)
-  );
+  const daysSinceLastTx =
+    data.latestOutboundTransactionDate != null
+      ? Math.floor(
+          (new Date(data.latestOutboundTransactionDate).valueOf() -
+            Date.now()) /
+            (1000 * 60 * 60 * 24)
+        )
+      : null;
   return (
     <VStack gap={24}>
       <div style={{ display: "flex", gap: 24 }}>
-        <Stat
-          name="Tx Score"
-          detail={data.totalTransactionsLast7DaysFromOwner}
-        />
+        {data.totalTransactionsLast7DaysFromOwner == null ? null : (
+          <Stat
+            name="Tx Score"
+            detail={data.totalTransactionsLast7DaysFromOwner}
+          />
+        )}
         <Stat
           name="Using DeFi"
           detail={
@@ -50,17 +56,19 @@ export function Stats({ address }: { address: string }) {
             )
           }
         />
-        <Stat
-          name="Last TX"
-          detail={
-            daysSinceLastTx === 0
-              ? "Today"
-              : new Intl.RelativeTimeFormat("en").format(
-                  daysSinceLastTx,
-                  "days"
-                )
-          }
-        />
+        {daysSinceLastTx == null ? null : (
+          <Stat
+            name="Last TX"
+            detail={
+              daysSinceLastTx === 0
+                ? "Today"
+                : new Intl.RelativeTimeFormat("en").format(
+                    daysSinceLastTx,
+                    "days"
+                  )
+            }
+          />
+        )}
       </div>
       <div style={{ display: "flex", gap: 24 }}>
         {data.hasWorldCoin ? (

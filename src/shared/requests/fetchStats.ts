@@ -48,9 +48,9 @@ export interface StatsResponse {
     lastOnline: null | Poap;
     lastOffline: null | Poap;
   };
-  totalTransactionHappenedOverLast7DaysTotal: number;
-  totalTransactionsLast7DaysFromOwner: number;
-  latestOutboundTransactionDate: string;
+  totalTransactionHappenedOverLast7DaysTotal: null | number;
+  totalTransactionsLast7DaysFromOwner: null | number;
+  latestOutboundTransactionDate: null | string;
 }
 
 export function fetchStats(address: string) {
