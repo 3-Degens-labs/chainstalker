@@ -36,7 +36,7 @@ export function OfflineCheckin({ address }: { address: string }) {
     return (
       <div
         style={{ fontSize: 14 }}
-        title={`${stats.poapInfo.lastOffline.name}\n\n${stats.poapInfo.lastOffline.descripton}`}
+        title={`${stats.poapInfo.lastOffline.name}\n\n${stats.poapInfo.lastOffline.description}`}
       >
         📍{" "}
         <span style={{ color: "var(--neutral-500)" }}>Last POAP Check-in:</span>{" "}

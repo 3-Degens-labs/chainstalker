@@ -5,7 +5,7 @@ interface Poap {
   tokenId: string;
   blockchain: string;
   name: string;
-  descripton: string;
+  description: string;
   imageUrl: string;
   animationUrl: string;
   previewLink: string;
