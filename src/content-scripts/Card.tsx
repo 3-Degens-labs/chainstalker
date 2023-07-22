@@ -1,8 +1,47 @@
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { documentReady } from "./document-ready";
-import { QueryClient, QueryClientProvider } from "react-query";
 import { Profile } from "./Profile";
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQuery,
+} from "@tanstack/react-query";
+import "src/styles/theme.module.css";
+import { VStack } from "structure-kit";
+import { Stats } from "src/components/Stats";
+import { getAccountDataMemoized } from "src/shared/account-resolving/account-data";
+import { ErrorBoundary } from "src/components/ErrorBoundary";
+
+function CardContent({ name }: { name: string }) {
+  const { data, isLoading } = useQuery({
+    queryKey: ["getAccountDataMemoized", name],
+    queryFn: () => getAccountDataMemoized(name),
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+  });
+  if (!data) {
+    return null;
+  }
+  if (isLoading) {
+    return null;
+  }
+  const { domain, address } = data;
+  if (!address) {
+    throw new Error(`address resolution failed: ${name}`);
+  }
+
+  return (
+    <VStack gap={24}>
+      <Profile address={address} domain={domain} />
+      <ErrorBoundary
+        renderError={(error) => <span>Render error: {error?.message}</span>}
+      >
+        <Stats address={address} />
+      </ErrorBoundary>
+    </VStack>
+  );
+}
 
 interface Props {
   id: string;
@@ -29,7 +68,7 @@ function Card({ name, id }: Props) {
       setDisplay({ display: "none", left: 0, top: 0 });
     };
     addressElement?.addEventListener("mouseenter", handleMouseEnter);
-    addressElement?.addEventListener("mouseleave", handleMouseLeave);
+    // addressElement?.addEventListener("mouseleave", handleMouseLeave);
     return () => {
       addressElement?.removeEventListener("mouseenter", handleMouseEnter);
       addressElement?.removeEventListener("mouseleave", handleMouseLeave);
@@ -47,19 +86,20 @@ function Card({ name, id }: Props) {
           '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif',
         left: style.left,
         padding: 20,
-        border: "2px solid #6f42c1", // Adding a border with a fancy color (#6f42c1)
+        // border: "2px solid #6f42c1", // Adding a border with a fancy color (#6f42c1)
         position: "absolute",
-        zIndex: 1,
+        zIndex: 10,
         backgroundColor: "white",
         borderRadius: "20px", // Adding rounded corners
-        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)", // Adding a subtle box-shadow
-        backgroundImage: "linear-gradient(135deg, #f49b00, #6f42c1, #18a5a5)", // Fancy gradient background
-        color: "#fff",
+        // boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)", // Adding a subtle box-shadow
+        boxShadow: "rgba(0, 0, 0, 0.1) 0px 5px 8px 2px",
+        // backgroundImage: "linear-gradient(135deg, #f49b00, #6f42c1, #18a5a5)", // Fancy gradient background
+        // color: "#fff",
         fontSize: "18px",
       }}
     >
       <React.Suspense fallback={<span>loading card...</span>}>
-        <Profile account={name} />
+        <CardContent name={name} />
       </React.Suspense>
     </div>
   );
