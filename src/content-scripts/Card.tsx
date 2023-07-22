@@ -20,6 +20,7 @@ function CardContent({ name }: { name: string }) {
     queryFn: () => getAccountDataMemoized(name),
     refetchOnMount: false,
     refetchOnWindowFocus: false,
+    retry: 0,
   });
   if (!data) {
     return null;
@@ -132,18 +133,11 @@ function Card({ name, id }: Props) {
         fontSize: "18px",
       }}
     >
-      <React.Suspense fallback={<span>loading card...</span>}>
-        <ErrorBoundary
-          renderError={(error) => (
-            <div>
-              Failed to render.{" "}
-              {error?.message ? `Reason: ${error.message}` : ""}
-            </div>
-          )}
-        >
+      <ErrorBoundary renderError={() => <div>Card failed to render.</div>}>
+        <React.Suspense fallback={<span>loading card...</span>}>
           <CardContent name={name} />
-        </ErrorBoundary>
-      </React.Suspense>
+        </React.Suspense>
+      </ErrorBoundary>
     </div>
   );
 }
