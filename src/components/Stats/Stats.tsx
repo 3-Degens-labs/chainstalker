@@ -1,38 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import ky from "ky";
 import React from "react";
 import { VStack } from "structure-kit";
 import { GradientText } from "../GradientText";
-
-interface Response {
-  hasWorldCoind: boolean;
-  hasNotDumbTransaction: boolean;
-
-  chainIDsWithActivity: number[];
-  lastPoap: null | {
-    address: string;
-    tokenId: string;
-    blockchain: string;
-    name: string;
-    descripton: string;
-    imageUrl: string;
-    animationUrl: string;
-    previewLink: string;
-    traits: Array<{
-      trait_type: string;
-      value: string;
-    }>;
-    owner: string[];
-    created: string;
-  };
-  totalTransactionHappenedOverLast7DaysTotal: number;
-  totalTransactionsLast7DaysFromOwner: number;
-  latestOutboundTransactionDate: string;
-}
-
-function fetchStats(address: string) {
-  return ky(`https://3degens.club/check/${address}`).json<Response>();
-}
+import { fetchStats } from "src/shared/requests/fetchStats";
 
 function Stat({
   name,
@@ -62,28 +32,56 @@ export function Stats({ address }: { address: string }) {
       (1000 * 60 * 60 * 24)
   );
   return (
-    <div style={{ display: "flex", gap: 24 }}>
-      <Stat name="Tx Score" detail={data.totalTransactionsLast7DaysFromOwner} />
-      <Stat
-        name="Using DeFi"
-        detail={
-          data.hasNotDumbTransaction ? (
-            <GradientText>
-              <strong>Yes</strong>
-            </GradientText>
-          ) : (
-            <span>No</span>
-          )
-        }
-      />
-      <Stat
-        name="Last TX"
-        detail={
-          daysSinceLastTx === 0
-            ? "Today"
-            : new Intl.RelativeTimeFormat("en").format(daysSinceLastTx, "days")
-        }
-      />
-    </div>
+    <VStack gap={24}>
+      <div style={{ display: "flex", gap: 24 }}>
+        <Stat
+          name="Tx Score"
+          detail={data.totalTransactionsLast7DaysFromOwner}
+        />
+        <Stat
+          name="Using DeFi"
+          detail={
+            data.hasNotDumbTransaction ? (
+              <GradientText>
+                <strong>Yes</strong>
+              </GradientText>
+            ) : (
+              <span>No</span>
+            )
+          }
+        />
+        <Stat
+          name="Last TX"
+          detail={
+            daysSinceLastTx === 0
+              ? "Today"
+              : new Intl.RelativeTimeFormat("en").format(
+                  daysSinceLastTx,
+                  "days"
+                )
+          }
+        />
+      </div>
+      <div style={{ display: "flex", gap: 24 }}>
+        {data.hasWorldCoin ? (
+          <img
+            style={{ display: "block", width: 64, height: 64 }}
+            src="https://static-assets.lenster.xyz/images/badges/worldcoin.png"
+          />
+        ) : null}
+        {data.poapInfo?.lastOffline?.imageUrl ? (
+          <img
+            style={{ display: "block", width: 64, height: 64 }}
+            src={data.poapInfo.lastOffline.imageUrl}
+          />
+        ) : null}
+        {data.poapInfo?.lastOnline?.imageUrl ? (
+          <img
+            style={{ display: "block", width: 64, height: 64 }}
+            src={data.poapInfo.lastOnline.imageUrl}
+          />
+        ) : null}
+      </div>
+    </VStack>
   );
 }

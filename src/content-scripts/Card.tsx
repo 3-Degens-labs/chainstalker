@@ -12,6 +12,7 @@ import { VStack } from "structure-kit";
 import { Stats } from "src/components/Stats";
 import { getAccountDataMemoized } from "src/shared/account-resolving/account-data";
 import { ErrorBoundary } from "src/components/ErrorBoundary";
+import { OfflineCheckin } from "src/components/OfflineCheckin";
 
 function CardContent({ name }: { name: string }) {
   const { data, isLoading } = useQuery({
@@ -33,7 +34,10 @@ function CardContent({ name }: { name: string }) {
 
   return (
     <VStack gap={24}>
-      <Profile address={address} domain={domain} />
+      <VStack gap={12}>
+        <Profile address={address} domain={domain} />
+        <OfflineCheckin address={address} />
+      </VStack>
       <ErrorBoundary
         renderError={(error) => <span>Render error: {error?.message}</span>}
       >
@@ -68,20 +72,21 @@ function Card({ name, id }: Props) {
       setDisplay({ display: "none", left: 0, top: 0 });
     };
     addressElement?.addEventListener("mouseenter", handleMouseEnter);
-    // addressElement?.addEventListener("mouseleave", handleMouseLeave);
+    addressElement?.addEventListener("mouseleave", handleMouseLeave);
     return () => {
       addressElement?.removeEventListener("mouseenter", handleMouseEnter);
       addressElement?.removeEventListener("mouseleave", handleMouseLeave);
     };
   }, []);
-  if (style.display === "none") {
-    return;
-  }
+  // if (style.display === "none") {
+  //   return;
+  // }
   return (
     <div
       style={{
         display: style.display,
         top: style.top,
+        minWidth: 350,
         fontFamily:
           '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif',
         left: style.left,
