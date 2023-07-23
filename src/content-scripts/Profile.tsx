@@ -39,10 +39,7 @@ export function Profile({
       <WalletAvatar size={64} address={address} />
 
       <VStack gap={4}>
-        <div
-          style={{ lineHeight: 1.2 }}
-          title={address}
-        >
+        <div style={{ lineHeight: 1.2 }} title={address}>
           <a
             data-augment-ignore="ignore"
             style={{ color: "var(--primary)" }}
