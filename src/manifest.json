@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Ethereum Address Watcher",
+  "name": "Chainstalker",
   "version": "1.0",
   "description": "Show details for ethereum addresses found on page",
   "icons": {
