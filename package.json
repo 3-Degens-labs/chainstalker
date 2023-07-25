@@ -12,7 +12,8 @@
     "pretest": "npm run lint",
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier --loglevel warn --write \"**/*.{ts,tsx,css,md}\"",
-    "lint": "eslint . --cache --fix --ext .ts,.tsx"
+    "lint": "eslint . --cache --fix --ext .ts,.tsx",
+    "prepare": "husky install"
   },
   "author": "everdimension",
   "license": "ISC",
@@ -28,6 +29,8 @@
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.3",
     "npm-run-all": "^4.1.5",
     "parcel": "^2.9.3",
     "prettier": "^3.0.0",
@@ -42,5 +45,9 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "structure-kit": "^0.0.6"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": "eslint --cache --fix",
+    "*.{ts,tsx,css,md}": "prettier --write"
   }
 }
