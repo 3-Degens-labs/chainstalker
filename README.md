@@ -1,4 +1,4 @@
-# Extension Ethereum Address Parser
+# Chainstalker
 
 ## Get Started
 
