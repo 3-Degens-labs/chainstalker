@@ -1,0 +1,38 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup NodeJS
+        uses: actions/setup-node@v3
+
+      - name: Install dependencies and build
+        env:
+          ALCHEMY_KEY: RKg5wIwcuh32powb0blKdPh0UwSsgmFI
+        run: |
+          npm install
+          npm run build:production
+
+      - name: Compress build artifacts
+        shell: bash
+        run: |
+          mv dist chainstalker-extension-${{github.ref_name}}
+          zip -r chainstalker-extension-${{github.ref_name}}.zip chainstalker-extension-${{github.ref_name}}
+          tar czf chainstalker-extension-${{github.ref_name}}.tar.gz --directory=chainstalker-extension-${{github.ref_name}} .
+
+      - name: Create release
+        uses: ncipollo/release-action@v1
+        with:
+          generateReleaseNotes: true
+          artifacts: 'chainstalker-extension-${{github.ref_name}}.zip,chainstalker-extension-${{github.ref_name}}.tar.gz'
