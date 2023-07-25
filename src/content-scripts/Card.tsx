@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Root, createRoot } from "react-dom/client";
-import { documentReady } from "./document-ready";
-import { Profile } from "./Profile";
+import type { Root } from "react-dom/client";
+import { createRoot } from "react-dom/client";
 import {
   QueryClient,
   QueryClientProvider,
@@ -13,6 +12,8 @@ import { Stats } from "src/components/Stats";
 import { getAccountDataMemoized } from "src/shared/account-resolving/account-data";
 import { ErrorBoundary } from "src/components/ErrorBoundary";
 import { OfflineCheckin } from "src/components/OfflineCheckin";
+import { Profile } from "./Profile";
+import { documentReady } from "./document-ready";
 
 function CardContent({ name }: { name: string }) {
   const { data, isLoading } = useQuery({
@@ -110,7 +111,7 @@ function Card({ name, id }: Props) {
       }
       clearTimeout(timerRef.current);
     };
-  }, []);
+  }, [id]);
   // if (style.display === "none") {
   //   return;
   // }
@@ -174,7 +175,7 @@ export function addCard(props: Props) {
       <React.Suspense fallback={<p>loading...</p>}>
         <Card {...props} />
       </React.Suspense>
-    </QueryClientProvider>
+    </QueryClientProvider>,
   );
 }
 

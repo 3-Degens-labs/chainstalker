@@ -1,8 +1,8 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import { AvatarIcon } from "./AvatarIcon";
 import { fetchStats } from "src/shared/requests/fetchStats";
 import { normalizeAddress } from "src/shared/normalizeAddress";
+import { AvatarIcon } from "./AvatarIcon";
 
 export function WalletAvatar({
   address,

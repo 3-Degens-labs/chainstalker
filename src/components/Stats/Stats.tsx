@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { HStack, VStack } from "structure-kit";
-import { GradientText } from "../GradientText";
 import { fetchStats } from "src/shared/requests/fetchStats";
 import { normalizeAddress } from "src/shared/normalizeAddress";
+import { GradientText } from "../GradientText";
 
 function Stat({
   name,
