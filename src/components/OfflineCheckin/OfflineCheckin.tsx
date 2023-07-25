@@ -10,11 +10,8 @@ export function OfflineCheckin({ address }: { address: string }) {
     queryKey: ["fetchStats", normalizedAddress],
     queryFn: () => fetchStats(normalizedAddress),
   });
-  if (!stats) {
-    return null;
-  }
   const location = useMemo(() => {
-    const traits = stats.poapInfo?.lastOffline?.traits;
+    const traits = stats?.poapInfo?.lastOffline?.traits;
     const location: { country: string | null; city: string | null } = {
       country: null,
       city: null,
@@ -31,6 +28,9 @@ export function OfflineCheckin({ address }: { address: string }) {
     }
     return location;
   }, [stats]);
+  if (!stats) {
+    return null;
+  }
   if (!stats.poapInfo?.lastOffline) {
     return null;
   }
