@@ -1,5 +1,5 @@
 import memoizeOne from "memoize-one";
-import { lookupAddressName, resolveDomain } from "./name-service";
+import { lookupAddress, resolveDomain } from "../requests/account-resolving";
 
 function isAddress(value: string) {
   return value.startsWith("0x");
@@ -7,7 +7,7 @@ function isAddress(value: string) {
 
 async function getAccountData(value: string) {
   if (isAddress(value)) {
-    const domain = await lookupAddressName(value);
+    const { domain } = await lookupAddress(value);
     return { address: value, domain };
   } else {
     const address = await resolveDomain(value);

@@ -12,6 +12,7 @@ import { Stats } from "src/components/Stats";
 import { getAccountDataMemoized } from "src/shared/account-resolving/account-data";
 import { ErrorBoundary } from "src/components/ErrorBoundary";
 import { OfflineCheckin } from "src/components/OfflineCheckin";
+import { VersionCheck } from "src/components/VersionCheck";
 import { Profile } from "./Profile";
 import { documentReady } from "./document-ready";
 
@@ -159,20 +160,24 @@ function Card({ name, id }: Props) {
         fontFamily:
           '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif',
         left: style.left,
-        padding: 20,
         position: "absolute",
-        zIndex: 10,
+        zIndex: 10002,
         backgroundColor: "white",
-        borderRadius: "20px", // Adding rounded corners
+        color: "black",
+        borderRadius: 20,
         boxShadow: "rgba(0, 0, 0, 0.1) 0px 5px 8px 2px",
-        fontSize: "18px",
+        fontSize: 18,
+        overflow: "hidden",
       }}
     >
-      <ErrorBoundary renderError={() => <div>Card failed to render.</div>}>
-        <React.Suspense fallback={<span>loading card...</span>}>
-          <CardContent name={name} />
-        </React.Suspense>
-      </ErrorBoundary>
+      <div style={{ padding: 20 }}>
+        <ErrorBoundary renderError={() => <div>Card failed to render.</div>}>
+          <React.Suspense fallback={<span>loading card...</span>}>
+            <CardContent name={name} />
+          </React.Suspense>
+        </ErrorBoundary>
+      </div>
+      <VersionCheck />
     </div>
   );
 }
