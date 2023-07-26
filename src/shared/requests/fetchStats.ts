@@ -56,5 +56,5 @@ export interface StatsResponse {
 }
 
 export function fetchStats(address: string) {
-  return ky(`https://3degens.club/check/${address}`).json<StatsResponse>();
+  return ky(`https://3degens.club/v1.0/check/${address}`).json<StatsResponse>();
 }
