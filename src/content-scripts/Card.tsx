@@ -49,6 +49,29 @@ function CardContent({ name }: { name: string }) {
   );
 }
 
+function isChildOf(
+  child: HTMLElement | null,
+  predicate: (node: HTMLElement) => boolean,
+) {
+  while (child) {
+    if (predicate(child)) {
+      return true;
+    }
+    child = child.parentElement;
+  }
+  return false;
+}
+
+function isLeaveForTwitterHoverCard(event: MouseEvent) {
+  return (
+    event.relatedTarget instanceof HTMLElement &&
+    isChildOf(
+      event.relatedTarget,
+      (element) => element.dataset.testid === "hoverCardParent",
+    )
+  );
+}
+
 interface Props {
   id: string;
   name: string;
@@ -56,6 +79,7 @@ interface Props {
 
 function Card({ name, id }: Props) {
   const [style, setDisplay] = useState({ display: "none", top: 0, left: 0 });
+  const openTimerRef = useRef<NodeJS.Timeout | number>(0);
   const timerRef = useRef<NodeJS.Timeout | number>(0);
   const cardRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
@@ -63,7 +87,7 @@ function Card({ name, id }: Props) {
     if (!addressElement) {
       return;
     }
-    const handleMouseEnter = () => {
+    const openPopup = () => {
       const { height, width, y, x } = addressElement.getBoundingClientRect();
       const { scrollLeft, scrollTop } = document.documentElement;
       const windowHeight = window.innerHeight;
@@ -84,10 +108,20 @@ function Card({ name, id }: Props) {
         left,
       });
     };
-    const handleMouseLeave = () => {
-      timerRef.current = setTimeout(() => {
-        setDisplay({ display: "none", left: 0, top: 0 });
-      }, 300);
+    function handleMouseEnter() {
+      openTimerRef.current = setTimeout(openPopup, 500);
+    }
+    const handleMouseLeave = (event: MouseEvent) => {
+      if (isLeaveForTwitterHoverCard(event)) {
+        // do not close:
+        // on Twitter there's a bug where hover card tempoparily appears
+        // over the username, triggering an undersired "mouseleave" event
+      } else {
+        clearTimeout(openTimerRef.current);
+        timerRef.current = setTimeout(() => {
+          setDisplay({ display: "none", left: 0, top: 0 });
+        }, 300);
+      }
     };
     addressElement?.addEventListener("mouseenter", handleMouseEnter);
     addressElement?.addEventListener("mouseleave", handleMouseLeave);
