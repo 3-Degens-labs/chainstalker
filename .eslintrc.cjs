@@ -20,6 +20,7 @@ module.exports = {
     {
       files: ["*.ts", "*.tsx"],
       extends: ["plugin:@typescript-eslint/recommended"],
+      parserOptions: { project: "./tsconfig.json" },
       rules: {
         "@typescript-eslint/no-var-requires": "off", // to be able to require resources, e.g. .png, .jpg
         "@typescript-eslint/ban-ts-comment": "off",
