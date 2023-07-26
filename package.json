@@ -1,6 +1,6 @@
 {
   "name": "extension-eth-address",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "",
   "scripts": {
     "start": "npm-run-all --parallel start:app type-check:watch",
