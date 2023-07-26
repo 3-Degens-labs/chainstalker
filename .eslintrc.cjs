@@ -28,7 +28,7 @@ module.exports = {
       },
     },
     {
-      files: [".eslintrc.cjs"],
+      files: ["*.cjs"],
       parserOptions: {
         project: null, // reset parserOptions from tsconfig above
       },

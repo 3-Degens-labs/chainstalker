@@ -13,7 +13,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier --loglevel warn --write \"**/*.{ts,tsx,css,md}\"",
     "lint": "eslint . --cache --fix --ext .ts,.tsx",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "postversion": "node ./scripts/manifest-version.cjs"
   },
   "author": "everdimension",
   "license": "ISC",
