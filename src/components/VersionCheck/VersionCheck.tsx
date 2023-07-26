@@ -21,8 +21,20 @@ export function VersionCheck() {
           rel="noopener noreferrer"
           style={{ color: "var(--negative-500)" }}
         >
-          New version is available
+          {data.statusMessage || "New version is available"}
         </a>
+      </div>
+    );
+  } else if (data?.statusMessage) {
+    return (
+      <div
+        style={{
+          padding: "4px 12px",
+          textAlign: "end",
+          color: "var(--notice-500)",
+        }}
+      >
+        {data.statusMessage}
       </div>
     );
   }
