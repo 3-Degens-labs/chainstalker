@@ -4,10 +4,10 @@
   "version": "1.0.3",
   "description": "Show details for ethereum addresses found on page",
   "icons": {
-    "16": "images/icon-512.png",
-    "32": "images/icon-512.png",
-    "48": "images/icon-512.png",
-    "128": "images/icon-512.png"
+    "16": "images/logo-beta-640.png",
+    "32": "images/logo-beta-640.png",
+    "48": "images/logo-beta-640.png",
+    "128": "images/logo-beta-640.png"
   },
   "content_scripts": [
     {
