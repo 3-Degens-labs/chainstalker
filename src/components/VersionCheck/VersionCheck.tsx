@@ -7,6 +7,7 @@ export function VersionCheck() {
     queryKey: ["verifyVersion"],
     queryFn: () => verifyVersion(),
     suspense: false,
+    staleTime: 1000 * 60 * 2, // 2 minutes
     useErrorBoundary: false, // ignore errors for this request
     retry: false,
     refetchOnMount: false,

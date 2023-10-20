@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useReducer } from "react";
 import type { Root } from "react-dom/client";
 import { createRoot } from "react-dom/client";
 import {
@@ -20,6 +20,7 @@ function CardContent({ name }: { name: string }) {
   const { data, isLoading } = useQuery({
     queryKey: ["getAccountDataMemoized", name],
     queryFn: () => getAccountDataMemoized(name),
+    staleTime: 20000,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     retry: 0,
@@ -78,8 +79,26 @@ interface Props {
   name: string;
 }
 
+function displayStateReducer(
+  state: { didShowOnce: boolean; style: React.CSSProperties },
+  newStyle: React.CSSProperties,
+) {
+  if (newStyle.display && newStyle.display !== "none") {
+    return { didShowOnce: true, style: newStyle };
+  } else {
+    return { ...state, style: newStyle };
+  }
+}
+const defaultDisplayState = {
+  didShowOnce: false,
+  style: { display: "none", top: 0, left: 0 },
+};
+
 function Card({ name, id }: Props) {
-  const [style, setDisplay] = useState({ display: "none", top: 0, left: 0 });
+  const [{ didShowOnce, style }, setStyle] = useReducer(
+    displayStateReducer,
+    defaultDisplayState,
+  );
   const openTimerRef = useRef<NodeJS.Timeout | number>(0);
   const timerRef = useRef<NodeJS.Timeout | number>(0);
   const cardRef = useRef<HTMLDivElement | null>(null);
@@ -103,7 +122,7 @@ function Card({ name, id }: Props) {
       if (left + approxCardWidth > windowWidth + scrollLeft) {
         left = scrollLeft + x + width - approxCardWidth - 12;
       }
-      setDisplay({
+      setStyle({
         display: "block",
         top,
         left,
@@ -120,7 +139,7 @@ function Card({ name, id }: Props) {
       } else {
         clearTimeout(openTimerRef.current);
         timerRef.current = setTimeout(() => {
-          setDisplay({ display: "none", left: 0, top: 0 });
+          setStyle({ display: "none", left: 0, top: 0 });
         }, 300);
       }
     };
@@ -130,7 +149,7 @@ function Card({ name, id }: Props) {
       clearTimeout(timerRef.current);
     };
     const handleCardMouseLeave = () => {
-      setDisplay({ display: "none", left: 0, top: 0 });
+      setStyle({ display: "none", left: 0, top: 0 });
     };
     const { current: cardElement } = cardRef;
     if (cardElement) {
@@ -147,6 +166,7 @@ function Card({ name, id }: Props) {
       clearTimeout(timerRef.current);
     };
   }, [id]);
+
   // if (style.display === "none") {
   //   return;
   // }
@@ -170,13 +190,15 @@ function Card({ name, id }: Props) {
         overflow: "hidden",
       }}
     >
-      <div style={{ padding: 20 }}>
-        <ErrorBoundary renderError={() => <div>Card failed to render.</div>}>
-          <React.Suspense fallback={<span>loading card...</span>}>
-            <CardContent name={name} />
-          </React.Suspense>
-        </ErrorBoundary>
-      </div>
+      {style.display === "none" && !didShowOnce ? null : (
+        <div style={{ padding: 20 }}>
+          <ErrorBoundary renderError={() => <div>Card failed to render.</div>}>
+            <React.Suspense fallback={<span>loading card...</span>}>
+              <CardContent name={name} />
+            </React.Suspense>
+          </ErrorBoundary>
+        </div>
+      )}
       <VersionCheck />
     </div>
   );
