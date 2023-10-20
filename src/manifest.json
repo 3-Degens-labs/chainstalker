@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Chainstalker",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Show details for ethereum addresses found on page",
   "icons": {
     "16": "images/logo-beta-640.png",
