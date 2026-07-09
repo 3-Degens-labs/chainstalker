@@ -19,7 +19,7 @@ jobs:
 
       - name: Install dependencies and build
         env:
-          ALCHEMY_KEY: RKg5wIwcuh32powb0blKdPh0UwSsgmFI
+          ALCHEMY_KEY: ${{ secrets.ALCHEMY_KEY }}
         run: |
           npm install
           npm run build:production
